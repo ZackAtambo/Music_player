@@ -64,7 +64,7 @@ app.post('/login', (req, res) => {
 
     // Check hard-coded credentials
     if (username === HARD_CODED_USERNAME && password === HARD_CODED_PASSWORD) {
-        const token = jwt.sign({ username: HARD_CODED_USERNAME }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ username: HARD_CODED_USERNAME }, process.env.JWT_SECRET, { expiresIn: '500h' });
         return res.json({ token });
     }
 
