@@ -1,0 +1,44 @@
+{
+  "type": "Compass Connections",
+  "version": {
+    "$numberInt": "1"
+  },
+  "connections": [
+    {
+      "id": "0e058b48-6fb7-4453-9731-31352c532cf4",
+      "lastUsed": {
+        "$date": {
+          "$numberLong": "1726050587756"
+        }
+      },
+      "favorite": {
+        "name": ""
+      },
+      "savedConnectionType": "favorite",
+      "connectionOptions": {
+        "connectionString": "mongodb://localhost:27017/",
+        "oidc": {
+          "serializedState": "eyJvaWRjUGx1Z2luU3RhdGVWZXJzaW9uIjowLCJzdGF0ZSI6W119"
+        }
+      }
+    },
+    {
+      "id": "dda3e6bc-6579-451b-b201-97d95acd188b",
+      "lastUsed": {
+        "$date": {
+          "$numberLong": "1726042400895"
+        }
+      },
+      "favorite": {
+        "name": "musicplayer"
+      },
+      "savedConnectionType": "favorite",
+      "connectionOptions": {
+        "connectionString": "mongodb://localhost:27017/",
+        "oidc": {
+          "serializedState": "eyJvaWRjUGx1Z2luU3RhdGVWZXJzaW9uIjowLCJzdGF0ZSI6W119"
+        }
+      }
+    }
+  ]
+}

@@ -1,63 +1,98 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(express.static('public'));
-app.use(bodyParser.json()); // Parse JSON bodies
+mongoose.connect('mongodb://localhost:27017/musicplayer', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
+});
+const User = mongoose.model('User', userSchema);
+
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Simple session setup for user authentication
+app.use(cookieParser());
 app.use(session({
-    secret: 'secret-key',
+    secret: process.env.SESSION_SECRET || 'aP9x$7jK#5w!h8RbY2v+T@1mNfQz3',
     resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false } // Set to true if using HTTPS
+    saveUninitialized: true
 }));
 
-// Mock data store
-let users = [];
+app.use(express.static('public'));
 
-// Handle user registration
-app.post('/register', (req, res) => {
-    const { username, password } = req.body;
-    if (users.some(user => user.username === username)) {
-        return res.status(409).json({ error: 'User already exists' });
-    }
-    users.push({ username, password });
-    res.status(200).json({ message: 'Registration successful' });
+function authenticateJWT(req, res, next) {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+}
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
 });
 
-// Handle user login
+app.get('/check-auth', authenticateJWT, (req, res) => {
+    res.status(200).send('Authenticated');
+});
+
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    const user = users.find(user => user.username === username && user.password === password);
-    if (user) {
-        req.session.user = username; // Save user to session
-        res.status(200).json({ message: 'Login successful' });
-    } else {
-        res.status(401).json({ error: 'Invalid credentials' });
-    }
+
+    User.findOne({ username }, (err, user) => {
+        if (err || !user) {
+            return res.status(401).send('Invalid credentials');
+        }
+
+        bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err || !isMatch) {
+                return res.status(401).send('Invalid credentials');
+            }
+
+            const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            res.json({ token });
+        });
+    });
 });
 
-// Check user authentication status
-app.get('/check-auth', (req, res) => {
-    if (req.session.user) {
-        res.status(200).json({ message: 'Authenticated' });
-    } else {
-        res.status(401).json({ message: 'Not authenticated' });
-    }
+app.post('/register', (req, res) => {
+    const { username, password } = req.body;
+
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
+        if (err) {
+            return res.status(500).send('Error registering user');
+        }
+
+        const newUser = new User({ username, password: hashedPassword });
+        newUser.save(err => {
+            if (err) {
+                return res.status(500).send('Error registering user');
+            }
+            res.status(200).send('Registered');
+        });
+    });
 });
 
-// Logout route
-app.post('/logout', (req, res) => {
-    req.session.destroy();
-    res.status(200).json({ message: 'Logged out successfully' });
+app.get('/logout', (req, res) => {
+    res.clearCookie('jwt');
+    res.redirect('/');
 });
 
-// Start the server
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
