@@ -1,197 +1,231 @@
+/* General Body Styles */
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient(to right,#9a1d86, #1595be);
-    font-weight: bold;
-}
-
-.container {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #9a1d86, #1595be);
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: linear-gradient(to right,#9a1d86, #1595be);
+    color: #fff;
 }
 
+/* Container for Centering Content */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 0 20px;
+}
+
+/* Form Containers */
 .form-container {
-    background-color: #ddd;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    background-color: #fff;
+    color: #333;
+    border-radius: 15px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
 }
 
-#login-form, #register-form {
-    max-width: 300px;
-    margin: auto;
+h1 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #333;
 }
 
 input[type="text"], input[type="password"] {
-    display: block;
     width: 100%;
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid #ccc;
     border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    box-sizing: border-box;
 }
 
 button {
-    padding: 10px;
     width: 100%;
+    padding: 12px;
     background-color: #4CAF50;
-    color: white;
     border: none;
     border-radius: 5px;
+    color: #fff;
+    font-size: 1.2rem;
     cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
 }
 
 button:hover {
     background-color: #45a049;
 }
 
-#error-message {
+/* Error Message Styling */
+#error-message, #login-error-message, #register-error-message {
     color: red;
+    font-size: 0.9rem;
+    margin-top: 10px;
 }
 
 /* Music Player Styles */
 .player {
-    height: 95vh;
     display: flex;
     align-items: center;
-    flex-direction: column;
     justify-content: center;
+    flex-direction: column;
+    height: 95vh;
 }
 
 .wrapper {
-    border: 1px solid transparent;
+    background-color: #fff;
     padding: 30px;
     border-radius: 20px;
-    background-color: #ddd;
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 19px 38px, rgba(0, 0, 0, 0.15) 0px 15px 12px;
+    text-align: center;
 }
 
 .details {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
+    margin-bottom: 20px;
 }
 
 .track-art {
-    margin: 25px;
     height: 250px;
     width: 250px;
-    border: 2px solid #FFFAFA;
     background-size: cover;
     background-position: center;
     border-radius: 50%;
-    box-shadow: 0px 6px 5px black;
+    box-shadow: 0px 6px 5px rgba(0, 0, 0, 0.5);
+    margin: 25px auto;
 }
 
 .now-playing {
     font-size: 1rem;
+    margin-bottom: 10px;
 }
 
 .track-name {
-    font-size: 2.5rem;
+    font-size: 2rem;
+    margin-top: 10px;
 }
 
 .track-artist {
+    font-size: 1.2rem;
     margin-top: 5px;
-    font-size: 1.5rem;
+    color: #666;
 }
 
+/* Control Buttons */
 .buttons {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 30px;
-}
-
-.active {
-    color: black;
-}
-
-.repeat-track,
-.random-track,
-.playpause-track,
-.prev-track,
-.next-track {
-    padding: 25px;
-    opacity: 0.8;
-    transition: opacity .2s;
-}
-
-.repeat-track:hover,
-.random-track:hover,
-.playpause-track:hover,
-.prev-track:hover,
-.next-track:hover {
-    opacity: 1.0;
-}
-
-.slider_container {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 20px;
+    margin-top: 20px;
 }
 
-.seek_slider, .volume_slider {
+.playpause-track,
+.next-track,
+.prev-track,
+.random-track,
+.repeat-track {
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.playpause-track:hover,
+.next-track:hover,
+.prev-track:hover,
+.random-track:hover,
+.repeat-track:hover {
+    opacity: 1;
+}
+
+.playpause-track i,
+.next-track i,
+.prev-track i {
+    font-size: 2rem;
+}
+
+.playpause-track i {
+    font-size: 4rem;
+}
+
+/* Slider Styles */
+.slider_container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.seek_slider,
+.volume_slider {
     -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     height: 5px;
-    background: #83A9FF;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
+    background: #4CAF50;
+    width: 60%;
+    margin: 10px;
+    border-radius: 5px;
 }
 
 .seek_slider::-webkit-slider-thumb,
 .volume_slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     width: 15px;
     height: 15px;
     background: white;
-    border: 3px solid #3774FF;
-    cursor: grab;
-    border-radius: 100%;
-}
-
-.seek_slider:hover,
-.volume_slider:hover {
-    opacity: 1.0;
-}
-
-.seek_slider {
-    width: 60%;
-}
-
-.volume_slider {
-    width: 30%;
+    border: 2px solid #4CAF50;
+    cursor: pointer;
+    border-radius: 50%;
 }
 
 .current-time,
 .total-duration {
-    padding: 10px;
+    font-size: 1rem;
+    padding: 0 10px;
 }
 
+/* Volume Icons */
 i.fa-volume-down,
 i.fa-volume-up {
-    padding: 10px;
+    font-size: 1.5rem;
+    padding: 0 10px;
 }
 
-i,
-i.fa-play-circle,
-i.fa-pause-circle,
-i.fa-step-forward,
-i.fa-step-backward,
-p {
-    cursor: pointer;
+/* Wave Animation for Music Playback */
+#wave {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.randomActive {
-    color: black;
+#wave span {
+    display: inline-block;
+    width: 5px;
+    height: 30px;
+    background: #4CAF50;
+    margin: 0 2px;
+    animation: wave 1s infinite ease-in-out;
 }
 
-.rotate {
-    animation: rotation 8s infinite linear;
+#wave span:nth-child(1) { animation-delay: 0s; }
+#wave span:nth-child(2) { animation-delay: 0.1s; }
+#wave span:nth-child(3) { animation-delay: 0.2s; }
+#wave span:nth-child(4) { animation-delay: 0.3s; }
+#wave span:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes wave {
+    0%, 100% { height: 10px; }
+    50% { height: 30px; }
+}
