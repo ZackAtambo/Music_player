@@ -1,269 +1,142 @@
-// Music Player Functions
-let now_playing = document.querySelector('.now-playing');
-let track_art = document.querySelector('.track-art');
-let track_name = document.querySelector('.track-name');
-let track_artist = document.querySelector('.track-artist');
-
-let playpause_btn = document.querySelector('.playpause-track');
-let next_btn = document.querySelector('.next-track');
-let prev_btn = document.querySelector('.prev-track');
-
-let seek_slider = document.querySelector('.seek_slider');
-let volume_slider = document.querySelector('.volume_slider');
-let curr_time = document.querySelector('.current-time');
-let total_duration = document.querySelector('.total-duration');
-let wave = document.getElementById('wave');
-let randomIcon = document.querySelector('.fa-random');
-let curr_track = document.createElement('audio');
-
-let track_index = 0;
-let isPlaying = false;
-let isRandom = false;
-let updateTimer;
-
-const music_list = [
-    {
-        img : 'images/Toni-Ann Singh.jpg',
-        name : 'Toni-Ann Singh',
-        artist : 'Burna Boy, Popcaan',
-        music : 'Toni-Ann Singh.mp3'
-    },
-    {
-        img : 'images/kante.jpeg',
-        name : 'kante',
-        artist : 'Davido, Fave',
-        music : 'music/kante.mp3'
-    },
-    {
-        img : 'images/silence.jpeg',
-        name : 'silence',
-        artist : 'Popcaan',
-        music : 'music/silence.mp3'
-    },
-    {
-        img : 'images/destruction.jpeg',
-        name : 'destruction',
-        artist : 'Tommy Lee',
-        music : 'music/destruction.mp3'
-    }
-];
-
-function loadTrack(track_index){
-    clearInterval(updateTimer);
-    reset();
-
-    curr_track.src = music_list[track_index].music;
-    curr_track.load();
-
-    track_art.style.backgroundImage = "url(" + music_list[track_index].img + ")";
-    track_name.textContent = music_list[track_index].name;
-    track_artist.textContent = music_list[track_index].artist;
-    now_playing.textContent = "Playing music " + (track_index + 1) + " of " + music_list.length;
-
-    updateTimer = setInterval(setUpdate, 1000);
-
-    curr_track.addEventListener('ended', nextTrack);
-    random_bg_color();
-}
-
-function random_bg_color(){
-    let hex = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e'];
-    let a;
-
-    function populate(a){
-        for(let i=0; i<6; i++){
-            let x = Math.round(Math.random() * 14);
-            let y = hex[x];
-            a += y;
-        }
-        return a;
-    }
-    let Color1 = populate('#');
-    let Color2 = populate('#');
-    var angle = 'to right';
-
-    let gradient = 'linear-gradient(' + angle + ',' + Color1 + ', ' + Color2 + ")";
-    document.body.style.background = gradient;
-}
-
-function reset(){
-    curr_time.textContent = "00:00";
-    total_duration.textContent = "00:00";
-    seek_slider.value = 0;
-}
-
-function randomTrack(){
-    isRandom ? pauseRandom() : playRandom();
-}
-
-function playRandom(){
-    isRandom = true;
-    randomIcon.classList.add('randomActive');
-}
-
-function pauseRandom(){
-    isRandom = false;
-    randomIcon.classList.remove('randomActive');
-}
-
-function repeatTrack(){
-    let current_index = track_index;
-    loadTrack(current_index);
-    playTrack();
-}
-
-function playpauseTrack(){
-    isPlaying ? pauseTrack() : playTrack();
-}
-
-function playTrack(){
-    curr_track.play();
-    isPlaying = true;
-    track_art.classList.add('rotate');
-    wave.classList.add('loader');
-    playpause_btn.innerHTML = '<i class="fa fa-pause-circle fa-5x"></i>';
-}
-
-function pauseTrack(){
-    curr_track.pause();
-    isPlaying = false;
-    track_art.classList.remove('rotate');
-    wave.classList.remove('loader');
-    playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-5x"></i>';
-}
-
-function nextTrack(){
-    if(track_index < music_list.length - 1 && isRandom === false){
-        track_index += 1;
-    }else if(track_index < music_list.length - 1 && isRandom === true){
-        let random_index = Number.parseInt(Math.random() * music_list.length);
-        track_index = random_index;
-    }else{
-        track_index = 0;
-    }
-    loadTrack(track_index);
-    playTrack();
-}
-
-function prevTrack(){
-    if(track_index > 0){
-        track_index -= 1;
-    }else{
-        track_index = music_list.length -1;
-    }
-    loadTrack(track_index);
-    playTrack();
-}
-
-function seekTo(){
-    let seekto = curr_track.duration * (seek_slider.value / 100);
-    curr_track.currentTime = seekto;
-}
-
-function setVolume(){
-    curr_track.volume = volume_slider.value / 100;
-}
-
-function setUpdate(){
-    let seekPosition = 0;
-    if(!isNaN(curr_track.duration)){
-        seekPosition = curr_track.currentTime * (100 / curr_track.duration);
-        seek_slider.value = seekPosition;
-
-        let currentMinutes = Math.floor(curr_track.currentTime / 60);
-        let currentSeconds = Math.floor(curr_track.currentTime - currentMinutes * 60);
-        let durationMinutes = Math.floor(curr_track.duration / 60);
-        let durationSeconds = Math.floor(curr_track.duration - durationMinutes * 60);
-
-        if(currentSeconds < 10) {currentSeconds = "0" + currentSeconds; }
-        if(durationSeconds < 10) { durationSeconds = "0" + durationSeconds; }
-        if(currentMinutes < 10) {currentMinutes = "0" + currentMinutes; }
-        if(durationMinutes < 10) { durationMinutes = "0" + durationMinutes; }
-
-        curr_time.textContent = currentMinutes + ":" + currentSeconds;
-        total_duration.textContent = durationMinutes + ":" + durationSeconds;
-    }
-}
-
-// Authentication Functions
 document.addEventListener('DOMContentLoaded', () => {
-    checkAuth();
+    const landingPage = document.getElementById('landing-page');
+    const musicList = document.getElementById('music-list');
+    const musicPlayerZone = document.getElementById('music-player-zone');
+    const showSongsButton = document.getElementById('show-songs');
+    const backToLandingButton = document.getElementById('back-to-landing');
+    const goHomeButton = document.getElementById('go-home');
+    const songList = document.getElementById('song-list');
+    const audio = new Audio();
+    let currentTrackIndex = 0;
+    let isPlaying = false;
+    let isRandom = false;
+
+    showSongsButton.addEventListener('click', () => {
+        fetch('/songs')
+            .then(response => response.json())
+            .then(songs => {
+                songList.innerHTML = '';
+                songs.forEach((song, index) => {
+                    const li = document.createElement('li');
+                    li.textContent = song;
+                    li.addEventListener('click', () => {
+                        loadTrack(index);
+                        playTrack();
+                        musicPlayerZone.style.display = 'block';
+                        musicList.style.display = 'none';
+                    });
+                    songList.appendChild(li);
+                });
+                musicList.style.display = 'block';
+                landingPage.style.display = 'none';
+            });
+    });
+
+    backToLandingButton.addEventListener('click', () => {
+        musicList.style.display = 'none';
+        musicPlayerZone.style.display = 'none';
+        landingPage.style.display = 'block';
+    });
+
+    goHomeButton.addEventListener('click', () => {
+        musicPlayerZone.style.display = 'none';
+        landingPage.style.display = 'block';
+    });
+
+    function loadTrack(index) {
+        const track = musicListData[index];
+        audio.src = `music/${track}`;
+        audio.load();
+        document.querySelector('.track-name').textContent = track.split('.')[0];
+        document.querySelector('.track-artist').textContent = 'Artist Name';
+        document.querySelector('.now-playing').textContent = `Playing music ${index + 1} of ${musicListData.length}`;
+        document.querySelector('.track-art').style.backgroundImage = `url(images/${track.split('.')[0]}.jpeg)`;
+        updateTimer = setInterval(() => {
+            document.querySelector('.seek_slider').value = (audio.currentTime / audio.duration) * 100;
+            document.querySelector('.current-time').textContent = formatTime(audio.currentTime);
+            document.querySelector('.total-duration').textContent = formatTime(audio.duration);
+        }, 1000);
+    }
+
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function playTrack() {
+        audio.play();
+        isPlaying = true;
+        document.querySelector('.playpause-track i').classList.replace('fa-play-circle', 'fa-pause-circle');
+        document.querySelector('.track-art').classList.add('rotate');
+        document.querySelector('#wave').classList.add('loader');
+    }
+
+    function pauseTrack() {
+        audio.pause();
+        isPlaying = false;
+        document.querySelector('.playpause-track i').classList.replace('fa-pause-circle', 'fa-play-circle');
+        document.querySelector('.track-art').classList.remove('rotate');
+        document.querySelector('#wave').classList.remove('loader');
+    }
+
+    function playpauseTrack() {
+        isPlaying ? pauseTrack() : playTrack();
+    }
+
+    function nextTrack() {
+        currentTrackIndex = (currentTrackIndex + 1) % musicListData.length;
+        loadTrack(currentTrackIndex);
+        playTrack();
+    }
+
+    function prevTrack() {
+        currentTrackIndex = (currentTrackIndex - 1 + musicListData.length) % musicListData.length;
+        loadTrack(currentTrackIndex);
+        playTrack();
+    }
+
+    function setVolume() {
+        audio.volume = document.querySelector('.volume_slider').value / 100;
+        document.getElementById('volume-symbol').className = audio.volume === 0 ? 'fa fa-volume-off' : 'fa fa-volume-down';
+    }
+
+    function seekTo() {
+        audio.currentTime = (document.querySelector('.seek_slider').value / 100) * audio.duration;
+    }
+
+    function randomTrack() {
+        isRandom = !isRandom;
+        document.querySelector('.random-track i').classList.toggle('fa-random', isRandom);
+        document.querySelector('.random-track i').classList.toggle('fa-random-active', !isRandom);
+    }
+
+    function repeatTrack() {
+        audio.loop = !audio.loop;
+        document.querySelector('.repeat-track i').classList.toggle('fa-repeat', audio.loop);
+        document.querySelector('.repeat-track i').classList.toggle('fa-repeat-1', !audio.loop);
+    }
+
+    audio.addEventListener('ended', () => {
+        isRandom ? nextTrack() : nextTrack();
+    });
+
+    document.querySelector('.playpause-track').addEventListener('click', playpauseTrack);
+    document.querySelector('.next-track').addEventListener('click', nextTrack);
+    document.querySelector('.prev-track').addEventListener('click', prevTrack);
+    document.querySelector('.volume_slider').addEventListener('input', setVolume);
+    document.querySelector('.seek_slider').addEventListener('input', seekTo);
+    document.querySelector('.random-track').addEventListener('click', randomTrack);
+    document.querySelector('.repeat-track').addEventListener('click', repeatTrack);
+
+    // Sample music list data
+    const musicListData = [
+        'destruction.mp3',
+        'kante.mp3',
+        'silence.mp3',
+        'Toni-Ann Singh.mp3'
+    ];
+
+    // Load the first track initially
+    loadTrack(currentTrackIndex);
 });
-
-function checkAuth() {
-    const token = localStorage.getItem('jwt');
-
-    fetch('/check-auth', {
-        method: 'GET',
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'same-origin',
-    })
-    .then(response => {
-        if (response.status === 200) {
-            document.getElementById('music-player').style.display = 'block';
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('register-form').style.display = 'none';
-        } else {
-            document.getElementById('music-player').style.display = 'none';
-            document.getElementById('login-form').style.display = 'block';
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-function showRegister() {
-    document.getElementById('login-form').style.display = 'none';
-    document.getElementById('register-form').style.display = 'block';
-}
-
-function showLogin() {
-    document.getElementById('register-form').style.display = 'none';
-    document.getElementById('login-form').style.display = 'block';
-}
-
-function login(event) {
-    event.preventDefault();
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
-
-    fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.token) {
-            localStorage.setItem('jwt', data.token);
-            window.location.reload(); // Reload to update UI
-        } else {
-            document.getElementById('login-error-message').textContent = 'Invalid credentials';
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-function register(event) {
-    event.preventDefault();
-    const username = document.getElementById('register-username').value;
-    const password = document.getElementById('register-password').value;
-
-    fetch('/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    })
-    .then(response => {
-        if (response.status === 200) {
-            showLogin();
-        } else {
-            document.getElementById('register-error-message').textContent = 'Error registering user';
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-function logout() {
-    localStorage.removeItem('jwt');
-    window.location.reload(); // Reload to update UI
-}
